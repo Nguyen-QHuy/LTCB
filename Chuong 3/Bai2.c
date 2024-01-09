@@ -10,6 +10,6 @@ int main()
     scanf("%f", &r);
     CV = 2 * pi * r;
     S = pi * r * r;
-    printf("\n Chu vi = %.2f \n Diện tích = %.2f", CV, S);
+    printf("\nChu vi = %.2f \nDiện tích = %.2f", CV, S);
     return 0;
 }
