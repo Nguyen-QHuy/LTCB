@@ -26,6 +26,7 @@ int main()
         printf("Số ngày trong tháng là 31 ngày");
         break;
     case 2:
+        /*
         if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
         {
             printf("Số ngày trong tháng là 29 ngày");
@@ -34,6 +35,8 @@ int main()
         {
             printf("Số ngày trong tháng là 28 ngày");
         }
+        */
+        (year % 4 == 0 && year % 100 != 0) || year % 400 == 0 ? printf("Số ngày trong tháng là 29 ngày") : printf("Số ngày trong tháng là 28 ngày");
         break;
     default:
         printf("Không có tháng này");

@@ -1,7 +1,7 @@
 #include <stdio.h>
 int main()
 {
-    unsigned int mode, player1, player2;
+    int mode, player1, player2;
     printf("Game Oẳn tù tì \nHai người chơi-1 \nChơi với máy-2 \nChọn chế độ chơi: ");
     scanf("%d", &mode);
     switch (mode)
@@ -23,6 +23,7 @@ int main()
         printf("Lỗi cú pháp");
         break;
     }
+    
     if ((player1 - player2 == 1) || (player1 - player2 == -2))
     {
         printf("Kết quả: Người chơi 1 thắng");

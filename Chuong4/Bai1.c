@@ -11,7 +11,7 @@ int main()
     printf("Nhập số thứ ba: ");
     scanf("%d", &num3);
 
-    if (num1 > num2)
+    if (num1 > num2 && num1 > num3)
     {
         max = num1;
     }
