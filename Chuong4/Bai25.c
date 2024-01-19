@@ -11,7 +11,6 @@ int main()
     y = b;
     while (r != 0)
     {
-
         r = x % y;
         x = y;
         y = r;
