@@ -15,7 +15,7 @@ void Xuat(float a[][10], int row, int column)
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < column; j++)
-            printf("%f ", a[i][j]);
+            printf("%.2f ", a[i][j]);
         printf("\n");
     }
 }
@@ -28,11 +28,11 @@ void cheo_hoa(float a[][10], int n)
         {
             if (a[k][i] != 0) // nếu a[k,i] khác 0
             {
-
+                float ratio = -a[i][i] / a[k][i];
                 for (int t = 0; t < n; t++)
                 {
-                    a[k][t] *=(float) -a[i][i] / a[k][i]; // nhân toàn bộ hàng k với -a[i,i]/a[k,i]
-                    a[k][t] += a[i][t];            // lấy hàng i cộng hàng k
+                    a[k][t] *= ratio;  // nhân toàn bộ hàng k với -a[i,i]/a[k,i]
+                    a[k][t] += a[i][t]; // lấy hàng i cộng hàng k
                 }
                 // đổi chỗ 2 hàng i & k
                 float temp;
