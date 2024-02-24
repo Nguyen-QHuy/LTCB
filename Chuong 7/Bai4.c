@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-void Nhap(int a[], int n)
+void Nhap(int *a, int n)
 {
-    scanf("%d", &a[0]);
-    for (int i = 1; i < n; i++) 
+    scanf("%d", a);
+    for (int i = 1; i < n; i++)
     {
-        scanf("%d", &a[i]);
-        if (a[i] < a[i - 1])
+        scanf("%d", (a + i));
+        if (*(a + i) < *(a + i - 1))
         {
             printf("Nhập lại:\n");
             Nhap(a, n);
@@ -15,24 +15,24 @@ void Nhap(int a[], int n)
     }
 }
 
-void Xuat(int a[], int n)
+void Xuat(int *a, int n)
 {
     for (int i = 0; i < n; i++)
-        printf("%d ", a[i]);
+        printf("%d ", *(a + i));
 }
 
-void Chen(int a[], int n)
+void Chen(int *a, int n)
 {
     int num;
     printf("\nNhập số mới: ");
     scanf("%d", &num);
     for (int i = 0; i < n; i++)
     {
-        if (num <= a[i])
+        if (num <= *(a + i))
         {
             for (int j = n; j > i; j--)
-                a[j] = a[j - 1];
-            a[i] = num;
+                *(a + j) = *(a + j - 1);
+            *(a + i) = num;
             break;
         }
     }

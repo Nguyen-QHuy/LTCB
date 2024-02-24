@@ -11,9 +11,7 @@ int main()
     {
         x1 = x2;
         x2 = (x1 + a / x1) / 2;
-        y = ((x2 - x1) / x1);
-        if (y < 0)
-            y *= -1;
+        y =fabs(((x2 - x1) / x1));
     } while (y >= e);
     printf("%f", x2);
     return 0;

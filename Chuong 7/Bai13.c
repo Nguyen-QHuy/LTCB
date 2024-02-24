@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-void Nhap(int a[], int n)
+void Nhap(int *a, int n)
 {
     scanf("%d", &a[0]);
     for (int i = 1; i < n; i++)
     {
-        scanf("%d", &a[i]);
-        if (a[i] < a[i - 1])
+        scanf("%d", a + i);
+        if (*(a + i) < *(a + i - 1))
         {
             printf("Nhập lại:\n");
             Nhap(a, n);
@@ -15,46 +15,51 @@ void Nhap(int a[], int n)
     }
 }
 
-void Xuat(int a[], int n)
+void Xuat(int *a, int n)
 {
     for (int i = 0; i < n; i++)
-        printf("%d ", a[i]);
+        printf("%d ", *(a + i));
 }
 
-void combine(int a[], int n, int b[], int m)
+void combine(int *a, int n, int *b, int m)
 {
-    int c[20], i = 0, j = 0;
+    int c[20], i = 0, j = 0, *pc = c;
     for (int t = 0; t < n + m; t++)
     {
-        if (a[i] == b[j])
+        if (*(a + i) == *(b + j))
         {
-            c[t]=c[t+1]=a[i];
+            *pc = *(pc + 1) = *(a + i);
+            pc += 2;
             i++;
             j++;
             t++;
         }
-        else if (a[i] < b[j])
+        else if (*(a + i) < *(b + j))
         {
-            if (a[i] != 0)
+            if (*(a + i) != 0)
             {
-                c[t] = a[i];
+                *pc = *(a + i);
+                pc++;
                 i++;
             }
             else
             {
-                c[t] = b[j];
+                *pc = *(b + j);
+                pc++;
             }
         }
         else
         {
-            if (b[j] != 0)
+            if (*(b + j) != 0)
             {
-                c[t] = b[j];
+                *pc = *(b + j);
+                pc++;
                 j++;
             }
             else
             {
-                c[t] = a[i];
+                *pc = *(a + i);
+                pc++;
             }
         }
     }

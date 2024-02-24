@@ -1,40 +1,40 @@
 #include <stdio.h>
 
-void Nhap(int a[], int n)
+void Nhap(int *a, int n)
 {
     for (int i = 0; i < n; i++)
-        scanf("%d", &a[i]);
+        scanf("%d", (a + i));
 }
 
-void Xuat(int a[], int n)
+void Xuat(int *a, int n)
 {
     for (int i = 0; i < n; i++)
-        printf("%d ", a[i]);
+        printf("%d ", *(a + i));
 }
 
-void Sort(int a[], int n)
+void Sort(int *a, int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
         for (int j = i + 1; j < n; j++)
         {
-            if (a[i] >= a[j])
+            if (*(a + i) >= *(a + j))
             {
-                a[i] *= a[j];
-                a[j] = a[i] / a[j];
-                a[i] = a[i] / a[j];
+                *(a + i) *= *(a + j);
+                *(a + j) = *(a + i) / *(a + j);
+                *(a + i) = *(a + i) / *(a + j);
             }
         }
     }
 }
 
-int Duplicate(int a[], int n)
+int Duplicate(int *a, int n)
 {
-    for (int i = 0; i < n-1; i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        if (a[i] == a[i + 1])
+        if (*(a + i) == *(a + i + 1))
         {
-            a[i + 1] = a[i + 2];
+            *(a + i + 1) = *(a + i + 2);
             n--;
             continue;
         }
