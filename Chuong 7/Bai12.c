@@ -1,60 +1,55 @@
 #include <stdio.h>
 
-void Nhap(float a[][10], int row, int column)
+void Nhap(float *a, int n)
 {
-    for (int i = 0; i < row; i++)
+    for (int i = 0; i < n; i++)
     {
         printf("Nhập hàng %d\n", i + 1);
-        for (int j = 0; j < column; j++)
-            scanf("%f", &a[i][j]);
+        for (int j = 0; j < n; j++)
+        {
+            scanf("%f", a + i * n + j);
+        }
     }
 }
-void Xuat(float a[][10], int row, int column)
+
+void Xuat(float *a, int n)
 {
-    for (int i = 0; i < row; i++)
+    printf("Ma tran sau bien doi:\n");
+    for (int i = 0; i < n; i++)
     {
-        for (int j = 0; j < column; j++)
-            printf("%.2f ", a[i][j]);
+        for (int j = 0; j < n; j++)
+        {
+            printf("%.2f ", *(a + i * n + j));
+        }
         printf("\n");
     }
 }
 
-void cheo_hoa(float a[][10], int n)
+void cheo_hoa(float *a, int n)
 {
-    for (int i = 0; i < n - 1; i++) // xét cột i
+    for (int i = 0; i < n - 1; i++)
     {
-        for (int k = i + 1; k < n; k++) // xét phần tử a[k,i]
+        for (int k = i + 1; k < n; k++)
         {
-            if (a[k][i] != 0) // nếu a[k,i] khác 0
+            float ratio = *(a + k * n + i) / *(a + i * (n + 1));
+            for (int j = i; j < n; j++)
             {
-                float ratio = -a[i][i] / a[k][i];
-                for (int t = 0; t < n; t++)
-                {
-                    a[k][t] *= ratio;  // nhân toàn bộ hàng k với -a[i,i]/a[k,i]
-                    a[k][t] += a[i][t]; // lấy hàng i cộng hàng k
-                }
-                // đổi chỗ 2 hàng i & k
-                float temp;
-                for (int t = 0; t < n; t++)
-                {
-                    /*temp = a[i][t];
-                    a[i][t] = a[k][t];
-                    a[k][t] = temp;*/
-                    a[k][t] *= -1;
-                }
+                *(a + k * n + j) -= ratio * *(a + i * n + j);
             }
         }
     }
 }
+
 int main()
 {
     int n;
     float a[10][10];
-    printf("Ma trận A vuông cấp: ");
+    printf("Nhap cap cua ma tran: ");
     scanf("%d", &n);
-    printf("Nhập ma trận A:\n");
-    Nhap(a, n, n);
+
+    Nhap(a, n);
     cheo_hoa(a, n);
-    Xuat(a, n, n);
+    Xuat(a, n);
+
     return 0;
 }
