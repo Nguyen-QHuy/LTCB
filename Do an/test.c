@@ -27,7 +27,7 @@ int MineMap[20][20] = {0};
 #define FLAG 2
 int StatusMap[20][20] = {0};
 
-int So_min, col;
+int So_min, col, col;
 int flag_count;
 
 void PrintColor(const char text[], int color)
@@ -83,19 +83,29 @@ void Dem_min()
     int count, r, c;
     // xet tung o trong bang
     for (c = 0; c < col; c++)
+    {
         for (r = 0; r < col; r++)
         {
             // kiem tra lan luot 8 o xung quanh o dang xet
             count = 0;
             for (int i = -1; i <= 1; i++)
+            {
                 for (int j = -1; j <= 1; j++)
+                {
                     if ((r + i >= 0 && r + i < col) && (c + j >= 0 && c + j < col) && (i != 0 || j != 0)) // kiểm tra các ô xung quanh có nằm ngoài mảng không
-                        if (MineMap[r + i][c + j] == MINE)                                                // neu o xung quanh o dang xet co min thi count+1
+                    {
+                        if (MineMap[r + i][c + j] == MINE) // neu o xung quanh o dang xet co min thi count+1
                             count++;
+                    }
+                }
+            }
             // neu o dang xet khong phai o min thì o do mang gia tri count
             if (MineMap[r][c] != MINE)
+            {
                 MineMap[r][c] = count;
+            }
         }
+    }
 }
 
 void Mo_o(int r, int c)
@@ -105,11 +115,15 @@ void Mo_o(int r, int c)
         return;
     StatusMap[r][c] = OPEN;     // chuyen trang thai o dang xet thanh da mo
     if (MineMap[r][c] == EMPTY) // neu o dang xet la o trong goi de quy mo 8 o xung quanh no
+    {
         for (i = -1; i <= 1; i++)
+        {
             for (j = -1; j <= 1; j++)
                 if ((r + i >= 0 && r + i < col) && (c + j >= 0 && c + j < col) && (i != 0 || j != 0))
                     if (StatusMap[r + i][c + j] == CLOSE)
                         Mo_o(r + i, c + j);
+        }
+    }
 }
 
 void printMap()
@@ -121,14 +135,21 @@ void printMap()
     printf("\n");
     // in so hang va trang thai o
     for (int i = 0; i < col; i++)
+    {
         for (int j = -1; j < col; j++)
         {
             if (j == -1) // in so hang
+            {
                 printf("%d ", (i + 1) % 10);
+            }
             else if (StatusMap[i][j] == CLOSE) // neu o trang thai dong
+            {
                 PrintColor("# ", GREEN);
+            }
             else if (StatusMap[i][j] == FLAG) // neu o trang thai cam co
+            {
                 PrintColor("P ", RED | GRAY);
+            }
             else // neu o trang thai mo
             {
                 switch (MineMap[i][j])
@@ -149,16 +170,21 @@ void printMap()
                 }
             }
         }
-    printf("\n");
+        printf("\n");
+    }
 }
 /*Tra ve so o con lai chua duoc mo*/
 int So_o_con_lai()
 {
     int count = 0, i, j;
     for (i = 0; i < col; i++)
+    {
         for (j = 0; j < col; j++)
+        {
             if (StatusMap[i][j] != OPEN)
                 count += 1;
+        }
+    }
     return count;
 }
 /*Tra ve ket qua thang thua cua nguoi choi
@@ -215,7 +241,7 @@ void Chon_level()
     PrintColor("Nhap \"2\" de chon che do TRUNG BINH (13x13, 20 qua min) \n", PURPLE | GRAY);
     PrintColor("Nhap \"3\" de chon che do KHO (20x20, 30 qua min) \n", PURPLE | GRAY);
     PrintColor("Nhap \"4\" de thoat khoi tro choi\n", PURPLE | GRAY);
-    fflush(stdin); // xoa bo nho dem de tranh bi lap
+    fflush(stdin);
     scanf("%c", &level);
     switch (level)
     {
@@ -231,7 +257,7 @@ void Chon_level()
         col = 20;
         So_min = 30;
         break;
-    case '4':
+    case 4:
         exit(0);
         break;
     default:
@@ -251,7 +277,7 @@ void Choi_lai()
     PrintColor("3.Thoat \n", GREEN | GRAY);
     while (1)
     {
-        fflush(stdin); // xoa bo nho dem de tranh bi lap
+        fflush(stdin);
         scanf("%c", &selection);
         switch (selection)
         {
@@ -275,15 +301,16 @@ void Choi_lai()
 
 void Newgame()
 {
-    // reset mang ve 0
+    // reset mảng
     int i, j;
     for (i = 0; i < col; i++)
+    {
         for (j = 0; j < col; j++)
         {
             MineMap[i][j] = 0;
             StatusMap[i][j] = 0;
         }
-
+    }
     flag_count = 0;
     int Is_flag_on = 0; // trang thai cam co
     int x, y;
