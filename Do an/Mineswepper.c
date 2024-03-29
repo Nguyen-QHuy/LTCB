@@ -121,14 +121,21 @@ void printMap()
     printf("\n");
     // in so hang va trang thai o
     for (int i = 0; i < col; i++)
+    {
         for (int j = -1; j < col; j++)
         {
             if (j == -1) // in so hang
+            {
                 printf("%d ", (i + 1) % 10);
+            }
             else if (StatusMap[i][j] == CLOSE) // neu o trang thai dong
+            {
                 PrintColor("# ", GREEN);
+            }
             else if (StatusMap[i][j] == FLAG) // neu o trang thai cam co
+            {
                 PrintColor("P ", RED | GRAY);
+            }
             else // neu o trang thai mo
             {
                 switch (MineMap[i][j])
@@ -149,7 +156,8 @@ void printMap()
                 }
             }
         }
-    printf("\n");
+        printf("\n");
+    }
 }
 /*Tra ve so o con lai chua duoc mo*/
 int So_o_con_lai()
@@ -168,27 +176,28 @@ int So_o_con_lai()
 int Kiem_tra(int r, int c)
 {
     int win = 0;
-    if (MineMap[r][c] == MINE)
+    if (MineMap[r][c] == MINE && StatusMap[r][c]==OPEN)  //thua neu mo trung o co min
     {
         win = -1;
-        return win;
     }
-    if (So_o_con_lai() == So_min)
+    if (So_o_con_lai() == So_min) //thang neu so o chua mo bang so min
     {
         win = 1;
-        return win;
-    }
-    if (flag_count == So_min)
-    {
-        win = 1;
+        //kiem tra lai xem nhung o chua mo co trung voi o co min khong
+        //neu co o khong trung thi thua
         for (int i = 0; i < col; i++)
-        {
             for (int j = 0; j < col; j++)
-            {
+                if (StatusMap[i][j] == CLOSE && MineMap[i][j] != MINE)
+                    win = -1;
+    }
+    if (flag_count == So_min) //thang neu so co da cam bang so min
+    {
+        win = 1;
+        //kiem tra lai xem nhung o cam co co trung voi o co min khong
+        for (int i = 0; i < col; i++)
+            for (int j = 0; j < col; j++)
                 if (StatusMap[i][j] == FLAG && MineMap[i][j] != MINE)
                     win = 0;
-            }
-        }
     }
     return win;
 }
@@ -349,9 +358,9 @@ void Newgame()
         {
             system("cls");
             if (Kiem_tra(x, y) == -1)
-                PrintColor("\n================= BAN DA THUA ==================\n", YELLOW | GRAY);
+                PrintColor("\n================= BAN DA THUA =================\n", YELLOW | GRAY);
             if (Kiem_tra(x, y) == 1)
-                PrintColor("\n================== BAN DA CHIEN THANG ==================\n", YELLOW | GRAY);
+                PrintColor("\n================= BAN DA CHIEN THANG =================\n", YELLOW | GRAY);
             for (i = 0; i < col; i++)
                 for (j = 0; j < col; j++)
                     Mo_o(i, j);
