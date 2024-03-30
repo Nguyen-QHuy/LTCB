@@ -44,16 +44,14 @@ void demsolan()
     FILE *file;
     file = fopen("solan.txt", "r");
     if (file != NULL)
-    {                                // mo file len de doc
         fscanf(file, "%d", &So_lan); // nhu ham scanf, no se gan gia tri đoc tu file vao bien so
-        So_lan++;                    // cong them 1 sau moi lan chay              // đoi mau cua chu
-        PrintColor("-------------------------------------------------------------------\n", GREEN | GRAY);
-        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        SetConsoleTextAttribute(hConsole, GREEN | GRAY);
-        printf("------------------ SO LAN DA CHAY FILE LA %d LAN ------------------\n", So_lan); // in ra số lần đã chạy
-        PrintColor("---------------------------------------------------------\n", GREEN | GRAY);
-        fclose(file); // đong file
-    }
+    So_lan++;                        // cong them 1 sau moi lan chay              // đoi mau cua chu
+    PrintColor("-------------------------------------------------------------------\n", GREEN | GRAY);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, GREEN | GRAY);
+    printf("------------------ SO LAN DA CHAY FILE LA %d LAN ------------------\n", So_lan); // in ra số lần đã chạy
+    PrintColor("---------------------------------------------------------\n", GREEN | GRAY);
+    fclose(file);                   // đong file
     file = fopen("solan.txt", "w"); // mo file đe ghi
     if (file != NULL)
     {
@@ -101,15 +99,16 @@ void Dem_min()
 void Mo_o(int r, int c)
 {
     int i, j;
-    if (StatusMap[r][c] == OPEN || StatusMap[r][c] == FLAG) // neu o da duoc mo hoac duoc cam co thi bo qua
-        return;
-    StatusMap[r][c] = OPEN;     // chuyen trang thai o dang xet thanh da mo
-    if (MineMap[r][c] == EMPTY) // neu o dang xet la o trong goi de quy mo 8 o xung quanh no
-        for (i = -1; i <= 1; i++)
-            for (j = -1; j <= 1; j++)
-                if ((r + i >= 0 && r + i < col) && (c + j >= 0 && c + j < col) && (i != 0 || j != 0))
-                    if (StatusMap[r + i][c + j] == CLOSE)
-                        Mo_o(r + i, c + j);
+    if (StatusMap[r][c] == CLOSE)
+    {                               // neu o da duoc mo hoac duoc cam co thi bo qua
+        StatusMap[r][c] = OPEN;     // chuyen trang thai o dang xet thanh da mo
+        if (MineMap[r][c] == EMPTY) // neu o dang xet la o trong goi de quy mo 8 o xung quanh no
+            for (i = -1; i <= 1; i++)
+                for (j = -1; j <= 1; j++)
+                    if ((r + i >= 0 && r + i < col) && (c + j >= 0 && c + j < col) && (i != 0 || j != 0))
+                        if (StatusMap[r + i][c + j] == CLOSE)
+                            Mo_o(r + i, c + j);
+    }
 }
 
 void printMap()
@@ -166,7 +165,7 @@ int So_o_con_lai()
     for (i = 0; i < col; i++)
         for (j = 0; j < col; j++)
             if (StatusMap[i][j] != OPEN)
-                count += 1;
+                count++;
     return count;
 }
 /*Tra ve ket qua thang thua cua nguoi choi
@@ -176,24 +175,19 @@ int So_o_con_lai()
 int Kiem_tra(int r, int c)
 {
     int win = 0;
-    if (MineMap[r][c] == MINE && StatusMap[r][c]==OPEN)  //thua neu mo trung o co min
+
+    if (So_o_con_lai() == So_min) // thang neu so o chua mo bang so min
+    {
+        win = 1;
+    }
+    if (MineMap[r][c] == MINE && StatusMap[r][c] == OPEN) // thua neu mo trung o co min
     {
         win = -1;
     }
-    if (So_o_con_lai() == So_min) //thang neu so o chua mo bang so min
+    if (flag_count == So_min) // thang neu so co da cam bang so min
     {
         win = 1;
-        //kiem tra lai xem nhung o chua mo co trung voi o co min khong
-        //neu co o khong trung thi thua
-        for (int i = 0; i < col; i++)
-            for (int j = 0; j < col; j++)
-                if (StatusMap[i][j] == CLOSE && MineMap[i][j] != MINE)
-                    win = -1;
-    }
-    if (flag_count == So_min) //thang neu so co da cam bang so min
-    {
-        win = 1;
-        //kiem tra lai xem nhung o cam co co trung voi o co min khong
+        // kiem tra lai xem nhung o cam co co trung voi o co min khong
         for (int i = 0; i < col; i++)
             for (int j = 0; j < col; j++)
                 if (StatusMap[i][j] == FLAG && MineMap[i][j] != MINE)
@@ -359,9 +353,9 @@ void Newgame()
             system("cls");
             if (Kiem_tra(x, y) == -1)
                 PrintColor("\n================= BAN DA THUA =================\n", YELLOW | GRAY);
-            if (Kiem_tra(x, y) == 1)
+            else
                 PrintColor("\n================= BAN DA CHIEN THANG =================\n", YELLOW | GRAY);
-            for (i = 0; i < col; i++)
+            for (i = 0; i < col; i++) // mo tat ca o con lai
                 for (j = 0; j < col; j++)
                     Mo_o(i, j);
             printMap();
