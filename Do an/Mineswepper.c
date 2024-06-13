@@ -27,15 +27,14 @@ int MineMap[20][20] = {0};
 #define FLAG 2
 int StatusMap[20][20] = {0};
 
-int So_min, col;
-int flag_count;
+int So_min, So_cot, So_co;
 
 void PrintColor(const char text[], int color)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, color);
+    SetConsoleTextAttribute(hConsole, color); // set mau chu console thanh color
     printf("%s", text);
-    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // Trả về màu chữ mặc định
+    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // tra ve mau mac dinh
 }
 
 void demsolan()
@@ -44,18 +43,20 @@ void demsolan()
     FILE *file;
     file = fopen("solan.txt", "r");
     if (file != NULL)
-        fscanf(file, "%d", &So_lan); // nhu ham scanf, no se gan gia tri đoc tu file vao bien so
-    So_lan++;                        // cong them 1 sau moi lan chay              // đoi mau cua chu
-    PrintColor("-------------------------------------------------------------------\n", GREEN | GRAY);
+        fscanf(file, "%d", &So_lan); // nhu ham scanf, no se gan gia tri doc tu file vao bien so
+    fclose(file); // dong file
+
+    So_lan++;                                                                                          // cong them 1 sau moi lan chay
+    PrintColor("-------------------------------------------------------------------\n", GREEN | GRAY); // doi mau cua chu
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, GREEN | GRAY);
-    printf("------------------ SO LAN DA CHAY FILE LA %d LAN ------------------\n", So_lan); // in ra số lần đã chạy
+    printf("------------------ SO LAN DA CHAY FILE LA %d LAN ------------------\n", So_lan);
     PrintColor("---------------------------------------------------------\n", GREEN | GRAY);
-    fclose(file);                   // đong file
-    file = fopen("solan.txt", "w"); // mo file đe ghi
+
+    file = fopen("solan.txt", "w"); // mo file de ghi
     if (file != NULL)
     {
-        fprintf(file, "%d", So_lan); // nhu ham printf nhung khong in ra mang hinh ma la in vào file gia tri cua num
+        fprintf(file, "%d", So_lan);
         fclose(file);
     }
 }
@@ -66,8 +67,8 @@ void Tao_min()
     srand(time(NULL)); // tao seed random
     while (i < So_min) // khi so min chua dat toi da thi tiep tuc them
     {
-        x = rand() % col;
-        y = rand() % col;
+        x = rand() % So_cot; 
+        y = rand() % So_cot;
         if (MineMap[x][y] == 0) // neu vi tri x;y chua co min thi them min
         {
             MineMap[x][y] = 9;
@@ -80,15 +81,15 @@ void Dem_min()
 {
     int count, r, c;
     // xet tung o trong bang
-    for (c = 0; c < col; c++)
-        for (r = 0; r < col; r++)
+    for (c = 0; c < So_cot; c++)
+        for (r = 0; r < So_cot; r++)    
         {
             // kiem tra lan luot 8 o xung quanh o dang xet
             count = 0;
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j <= 1; j++)
-                    if ((r + i >= 0 && r + i < col) && (c + j >= 0 && c + j < col) && (i != 0 || j != 0)) // kiểm tra các ô xung quanh có nằm ngoài mảng không
-                        if (MineMap[r + i][c + j] == MINE)                                                // neu o xung quanh o dang xet co min thi count+1
+                    if ((r + i >= 0 && r + i < So_cot) && (c + j >= 0 && c + j < So_cot) && (i != 0 || j != 0)) // kiem tra cac o xung quanh co nam trong man choi khong
+                        if (MineMap[r + i][c + j] == MINE)                                                      // neu o xung quanh o dang xet co min thi count+1
                             count++;
             // neu o dang xet khong phai o min thì o do mang gia tri count
             if (MineMap[r][c] != MINE)
@@ -105,7 +106,7 @@ void Mo_o(int r, int c)
         if (MineMap[r][c] == EMPTY) // neu o dang xet la o trong goi de quy mo 8 o xung quanh no
             for (i = -1; i <= 1; i++)
                 for (j = -1; j <= 1; j++)
-                    if ((r + i >= 0 && r + i < col) && (c + j >= 0 && c + j < col) && (i != 0 || j != 0))
+                    if ((r + i >= 0 && r + i < So_cot) && (c + j >= 0 && c + j < So_cot) && (i != 0 || j != 0))
                         if (StatusMap[r + i][c + j] == CLOSE)
                             Mo_o(r + i, c + j);
     }
@@ -115,26 +116,20 @@ void printMap()
 {
     // in so cot
     printf(" ");
-    for (int t = 0; t < col; t++)
+    for (int t = 0; t < So_cot; t++)
         printf(" %d", (t + 1) % 10);
     printf("\n");
     // in so hang va trang thai o
-    for (int i = 0; i < col; i++)
+    for (int i = 0; i < So_cot; i++)
     {
-        for (int j = -1; j < col; j++)
+        for (int j = -1; j < So_cot; j++)
         {
             if (j == -1) // in so hang
-            {
                 printf("%d ", (i + 1) % 10);
-            }
             else if (StatusMap[i][j] == CLOSE) // neu o trang thai dong
-            {
                 PrintColor("# ", GREEN);
-            }
             else if (StatusMap[i][j] == FLAG) // neu o trang thai cam co
-            {
                 PrintColor("P ", RED | GRAY);
-            }
             else // neu o trang thai mo
             {
                 switch (MineMap[i][j])
@@ -162,8 +157,8 @@ void printMap()
 int So_o_con_lai()
 {
     int count = 0, i, j;
-    for (i = 0; i < col; i++)
-        for (j = 0; j < col; j++)
+    for (i = 0; i < So_cot; i++)
+        for (j = 0; j < So_cot; j++)
             if (StatusMap[i][j] != OPEN)
                 count++;
     return count;
@@ -176,37 +171,28 @@ int Kiem_tra(int r, int c)
 {
     int win = 0;
 
-    if (So_o_con_lai() == So_min) // thang neu so o chua mo bang so min
-    {
-        win = 1;
-    }
     if (MineMap[r][c] == MINE && StatusMap[r][c] == OPEN) // thua neu mo trung o co min
     {
         win = -1;
     }
-    if (flag_count == So_min) // thang neu so co da cam bang so min
+    else if (So_o_con_lai() == So_min) // thang neu so o chua mo bang so min
     {
         win = 1;
-        // kiem tra lai xem nhung o cam co co trung voi o co min khong
-        for (int i = 0; i < col; i++)
-            for (int j = 0; j < col; j++)
-                if (StatusMap[i][j] == FLAG && MineMap[i][j] != MINE)
-                    win = 0;
     }
     return win;
 }
 
 void Cam_co(int r, int c)
 {
-    if (StatusMap[r][c] == CLOSE && flag_count < So_min)
+    if (StatusMap[r][c] == CLOSE)
     {
         StatusMap[r][c] = FLAG;
-        flag_count++;
+        So_co++;
     }
     else if (StatusMap[r][c] == FLAG)
     {
         StatusMap[r][c] = CLOSE;
-        flag_count--;
+        So_co--;
     }
 }
 
@@ -223,16 +209,16 @@ void Chon_level()
     switch (level)
     {
     case EASY:
-        col = 9;
-        So_min = 3;
+        So_cot = 9;
+        So_min = 5;
         break;
     case MEDIUM:
-        col = 13;
-        So_min = 20;
+        So_cot = 13;
+        So_min = 30;
         break;
     case HARD:
-        col = 20;
-        So_min = 30;
+        So_cot = 20;
+        So_min = 60;
         break;
     case '4':
         exit(0);
@@ -280,14 +266,14 @@ void Newgame()
 {
     // reset mang ve 0
     int i, j;
-    for (i = 0; i < col; i++)
-        for (j = 0; j < col; j++)
+    for (i = 0; i < So_cot; i++)
+        for (j = 0; j < So_cot; j++)
         {
             MineMap[i][j] = 0;
             StatusMap[i][j] = 0;
         }
 
-    flag_count = 0;
+    So_co = 0;
     int Is_flag_on = 0; // trang thai cam co
     int x, y;
     Tao_min();
@@ -302,6 +288,8 @@ void Newgame()
         PrintColor("-------------------------------------------------------------------\n", BLUE | GRAY);
         PrintColor("Trang thai: ", PURPLE | GRAY);
         Is_flag_on == 0 ? PrintColor("Mo o\n", YELLOW | GRAY) : PrintColor("Cam co\n", YELLOW | GRAY);
+        PrintColor("So co con lai: ", PURPLE | GRAY); 
+        printf("%d\n", So_min - So_co);
         PrintColor("Nhap toa do o\n", GREEN | GRAY);
         PrintColor("Hang: ", GREEN | GRAY);
         scanf("%d", &x);
@@ -325,7 +313,7 @@ void Newgame()
             continue;
         }
 
-        if (x > col || y > col) // bao loi neu x hoac y lon hon ban choi
+        if (x > So_cot || y > So_cot) // bao loi neu x hoac y lon hon ban choi
         {
             system("cls");
             printMap();
@@ -339,8 +327,6 @@ void Newgame()
             Cam_co(x, y);
             system("cls");
             printMap();
-            if (flag_count == So_min) // bao loi cam het co
-                PrintColor("Ban da het co !!!\n", RED);
         }
         else
         {
@@ -355,8 +341,8 @@ void Newgame()
                 PrintColor("\n================= BAN DA THUA =================\n", YELLOW | GRAY);
             else
                 PrintColor("\n================= BAN DA CHIEN THANG =================\n", YELLOW | GRAY);
-            for (i = 0; i < col; i++) // mo tat ca o con lai
-                for (j = 0; j < col; j++)
+            for (i = 0; i < So_cot; i++) // mo tat ca o con lai
+                for (j = 0; j <= So_cot; j++)
                     Mo_o(i, j);
             printMap();
             Choi_lai();

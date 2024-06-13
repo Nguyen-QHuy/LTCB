@@ -2,5 +2,7 @@
     "files.associations": {
         "windows.h": "c",
         "vector": "cpp"
-    }
+    },
+    "stm32-for-vscode.openOCDPath": false,
+    "stm32-for-vscode.makePath": false
 }
