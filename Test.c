@@ -19,11 +19,6 @@ int main()
     __uint128_t Reg = 0xffffffff<<16;
     for (int i = 0; i < 16; i++)
     {
-        // int temp = Pin & 1;
-        // // printf("%d\n", temp);
-        // if (temp == 1)
-        //     Reg += Mode << (4 * i);
-        // Pin = Pin >> 1;
     printBinary(Pin & (1<<15));
     Pin <<=1;
     }
